@@ -1,0 +1,41 @@
+version: '3'
+
+volumes:
+  pg_data:
+  static:
+  media:
+  docs:
+
+services:
+  db:
+    image: postgres:13
+    env_file: .env
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  backend:
+    image: rassolflex/fg_backend
+    env_file: .env
+    depends_on:
+      - db
+    volumes:
+      - static:/backend_static
+      - media:/app/media
+      - docs:/app/docs
+  frontend:
+    image: rassolflex/fg_frontend
+    env_file: .env
+    command: cp -r /app/build/. /frontend_static/
+    volumes:
+      - static:/frontend_static
+  gateway:
+    image: rassolflex/fg_gateway
+    env_file: .env
+    depends_on:
+      - backend
+      - frontend
+    volumes:
+      - static:/staticfiles
+      - media:/media
+      - docs:/usr/share/nginx/html/api/docs
+    ports:
+      - 8800:80
