@@ -139,25 +139,25 @@ class RecipeCreateSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         ingredients = attrs.get('ingredients')
         if not ingredients:
-            raise serializers.ValidationError(
-                'Необходимо добавить ингредиенты'
-            )
+            raise serializers.ValidationError({
+                'error': 'Необходимо добавить ингредиенты'
+            })
         ingredient_list = [
             ingrediend['id'] for ingrediend in ingredients
         ]
         if len(set(ingredient_list)) != len(ingredient_list):
-            raise serializers.ValidationError(
-                'Ингредиенты не должны повторяться'
-            )
+            raise serializers.ValidationError({
+                'error': 'Ингредиенты не должны повторяться'
+            })
         tags = attrs.get('tags')
         if not tags:
-            raise serializers.ValidationError(
-                'Необходимо добавить теги'
-            )
+            raise serializers.ValidationError({
+                'error': 'Необходимо добавить теги'
+            })
         if len(set(tags)) != len(tags):
-            raise serializers.ValidationError(
-                'Теги не должны повторяться'
-            )
+            raise serializers.ValidationError({
+                'error': 'Теги не должны повторяться'
+            })
         return attrs
 
     @staticmethod
@@ -219,8 +219,9 @@ class RecipeUserSerializer(serializers.ModelSerializer):
             user=self.context.get('request').user,
             recipe=attrs.get('recipe')
         ).exists():
-            raise serializers.ValidationError(f'Рецепт уже добавлен в '
-                                              f'{self.Meta.model.__name__}')
+            raise serializers.ValidationError({
+                'error': f'Рецепт уже добавлен в {self.Meta.model.__name__}'
+            })
         return attrs
 
     def to_representation(self, instance):

@@ -1,6 +1,5 @@
 from rest_framework import serializers
 
-from foodgram.constants import LIST_PER_PAGE
 from recipes.models import Recipe, User
 from users.models import Follow
 
@@ -60,7 +59,12 @@ class FollowSerializer(FoodgramUserSerializer):
         recipes = obj.recipes.all()
         limit = self.context['request'].query_params['recipes_limit']
         if limit:
-            recipes = recipes[:int(limit, LIST_PER_PAGE)]
+            try:
+                recipes = recipes[:int(limit)]
+            except ValueError:
+                raise serializers.ValidationError({
+                    'error': 'recipes_limit должен быть числом'
+                })
         return RecipeShortSerializer(
             recipes,
             many=True,
@@ -79,13 +83,13 @@ class SubscribeSerializer(serializers.ModelSerializer):
         follower = data.get('follower')
         following = data.get('following')
         if follower == following:
-            raise serializers.ValidationError(
-                'Нельзя подписаться на самого себя'
-            )
+            raise serializers.ValidationError({
+                'error': 'Нельзя подписаться на самого себя'
+            })
         if following.following.filter(follower=follower).exists():
-            raise serializers.ValidationError(
-                'Вы уже подписаны на этого пользователя'
-            )
+            raise serializers.ValidationError({
+                'error': 'Вы уже подписаны на этого пользователя'
+            })
         return data
 
     def to_representation(self, instance):

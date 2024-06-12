@@ -10,14 +10,14 @@
 - nginx
 - Gunicorn
 
-полный список -> [requirements.txt](https://github.com/RassolFlex/foodgram-project-react/blob/master/backend/foodgram/requirements.txt)
+полный список -> [requirements.txt](https://github.com/RassolFlex/Foodgram/blob/master/backend/foodgram/requirements.txt)
 
 ## Как запустить проект:
 
 Клонировать репозиторий и перейти в него в командной строке:
 
 ```bash
-git clone https://github.com/RassolFlex/foodgram-project-react.git 
+git clone https://github.com/RassolFlex/Foodgram.git 
 ```
 
 Перейти в корневую директорию:
@@ -70,6 +70,8 @@ docker compose -f docker-compose.production.yml exec backend python manage.py cr
 
 ### Автор
 Александр Огольцов [@RassolFlex](https://github.com/RassolFlex)
+
+Проект развёрнут [тут](http://rassol-fg.sytes.net/)
 
 ***
 
